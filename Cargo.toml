@@ -2,6 +2,9 @@
 name = "rust-wasm-game-of-life"
 version = "0.1.0"
 authors = ["Pascal Hartig <phartig@rdrei.net>"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/passy/rust-wasm-game-of-life"
+description = "Following https://rustwasm.github.io/book"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
