@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "esNext",
+    "target": "es5",
+    "jsx": "react",
+    "lib": ["dom", "es2015"],
+    "strict": true,  
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
+}
