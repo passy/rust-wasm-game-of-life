@@ -1,10 +1,8 @@
-extern crate cfg_if;
-extern crate wasm_bindgen;
-
 mod utils;
 
 use cfg_if::cfg_if;
 use wasm_bindgen::prelude::*;
+use std::fmt;
 
 cfg_if! {
     // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -80,6 +78,23 @@ impl Universe {
         }
 
         count
+    }
+}
+
+impl fmt::Display for Universe {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for line in self.cells.as_slice().chunks(self.width as usize) {
+            for &cell in line {
+                let symbol = match cell {
+                    Cell::Alive => '◻',
+                    Cell::Dead => '◼',
+                };
+                write!(f, "{}", symbol)?;
+            }
+            write!(f, "\n")?;
+        }
+
+        Ok(())
     }
 }
 
