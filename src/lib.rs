@@ -1,8 +1,8 @@
 mod utils;
 
 use cfg_if::cfg_if;
-use wasm_bindgen::prelude::*;
 use std::fmt;
+use wasm_bindgen::prelude::*;
 
 cfg_if! {
     // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -32,6 +32,30 @@ pub struct Universe {
 
 #[wasm_bindgen]
 impl Universe {
+    pub fn new() -> Self {
+        let width = 64;
+        let height = 64;
+        let cells = (0..width * height)
+            .map(|i| {
+                if i % 2 == 0 || i % 7 == 0 {
+                    Cell::Alive
+                } else {
+                    Cell::Dead
+                }
+            })
+            .collect();
+
+        Universe {
+            width,
+            height,
+            cells,
+        }
+    }
+
+    pub fn render(&self) -> String {
+        self.to_string()
+    }
+
     pub fn tick(&mut self) {
         // TODO: Meh, this should return a new Universe instead of mutating itself.
         let mut next = self.cells.clone();
@@ -48,7 +72,6 @@ impl Universe {
                     (Cell::Alive, x) if x > 3 => Cell::Dead,
                     (Cell::Dead, 3) => Cell::Alive,
                     (otherwise, _) => otherwise,
-
                 };
                 next[idx] = next_cell;
             }
@@ -99,7 +122,7 @@ impl fmt::Display for Universe {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn alert(s: &str);
 }
 
