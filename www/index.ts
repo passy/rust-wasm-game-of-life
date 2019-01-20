@@ -9,25 +9,45 @@ const ALIVE_COLOR = "#000000";
 const universe = Universe.new();
 const width = universe.width();
 const height = universe.height();
+const $canvas = document.querySelector("#game-of-life-canvas") as any;
+const $playPause = document.querySelector("#play-pause");
 
 const ctx = (() => {
-    const canvas = document.querySelector("#game-of-life-canvas") as any;
-    if (canvas === null) return null;
-    canvas.height = (CELL_SIZE + 1) * height + 1;
-    canvas.width = (CELL_SIZE + 1) * width + 1;
-    return canvas.getContext('2d');
+    if ($canvas === null) return null;
+    $canvas.height = (CELL_SIZE + 1) * height + 1;
+    $canvas.width = (CELL_SIZE + 1) * width + 1;
+    return $canvas.getContext('2d');
 })();
 
+interface State {
+    animationId: number,
+};
+
+const globalState: State = { animationId: 0 };
 const renderLoop = () => {
     universe.tick();
     
     drawGrid(ctx);
     drawCells(ctx);
 
-    requestAnimationFrame(renderLoop);
+    globalState.animationId = requestAnimationFrame(renderLoop);
 };
 
+const isPaused = (state: State) => state.animationId === 0;
 const getIndex = (row: number, column: number) => row * width + column;
+
+const play = () => {
+    if ($playPause == null || !isPaused(globalState)) return;
+    $playPause.textContent = "⏸";
+    requestAnimationFrame(renderLoop);
+}
+
+const pause = () => {
+    if ($playPause == null || isPaused(globalState)) return;
+    $playPause.textContent = "▶";
+    cancelAnimationFrame(globalState.animationId);
+    globalState.animationId = 0;
+}
 
 const drawCells = (ctx: CanvasRenderingContext2D) => {
     const cellsPtr = universe.cells_ptr();
@@ -72,7 +92,20 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
     ctx.stroke();
 };
 
+const initEventHandlers = () => {
+    if ($playPause !== null) {
+        $playPause.addEventListener("click", event => {
+            if (isPaused(globalState)) {
+                play();
+            } else {
+                pause();
+            }
+        });
+    }
+}
+
 // Initialisation
 drawGrid(ctx);
 drawCells(ctx);
-requestAnimationFrame(renderLoop);
+play();
+initEventHandlers();

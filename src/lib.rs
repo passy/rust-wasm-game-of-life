@@ -74,14 +74,6 @@ impl Universe {
                 let cell = self.cells[idx];
                 let live_neighbor_count = self.live_neighbor_count(row, column);
 
-                log!(
-                    "cell[{}, {}] is initially {:?} and has {} live neighbors",
-                    row,
-                    column,
-                    cell,
-                    live_neighbor_count,
-                );
-
                 let next_cell = match (cell, live_neighbor_count) {
                     (Cell::Alive, x) if x < 2 => Cell::Dead,
                     (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
