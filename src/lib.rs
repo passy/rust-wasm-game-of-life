@@ -14,6 +14,12 @@ cfg_if! {
     }
 }
 
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
+
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -33,6 +39,8 @@ pub struct Universe {
 #[wasm_bindgen]
 impl Universe {
     pub fn new() -> Self {
+        utils::set_panic_hook();
+
         let width = 64;
         let height = 64;
         let cells = (0..width * height)
@@ -65,6 +73,14 @@ impl Universe {
                 let idx = self.get_index(row, column);
                 let cell = self.cells[idx];
                 let live_neighbor_count = self.live_neighbor_count(row, column);
+
+                log!(
+                    "cell[{}, {}] is initially {:?} and has {} live neighbors",
+                    row,
+                    column,
+                    cell,
+                    live_neighbor_count,
+                );
 
                 let next_cell = match (cell, live_neighbor_count) {
                     (Cell::Alive, x) if x < 2 => Cell::Dead,
