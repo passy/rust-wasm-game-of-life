@@ -94,12 +94,32 @@ const drawGrid = (ctx: CanvasRenderingContext2D) => {
 
 const initEventHandlers = () => {
     if ($playPause !== null) {
-        $playPause.addEventListener("click", event => {
+        $playPause.addEventListener("click", _event => {
             if (isPaused(globalState)) {
                 play();
             } else {
                 pause();
             }
+        });
+    }
+
+    if ($canvas !== null) {
+        const $c: Element = $canvas;
+        $c.addEventListener("click", (event: any) => {
+            const boundingRect = $c.getBoundingClientRect();
+            const scaleX = $canvas.width / boundingRect.width;
+            const scaleY = $canvas.height / boundingRect.height;
+
+            const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
+            const canvasTop = (event.clientY - boundingRect.top) * scaleY;
+
+            const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
+            const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
+
+            universe.toggle_cell(row, col);
+
+            drawGrid(ctx);
+            drawCells(ctx);
         });
     }
 }

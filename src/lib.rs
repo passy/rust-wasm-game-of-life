@@ -110,6 +110,12 @@ impl Universe {
         self.cells.as_ptr()
     }
 
+    pub fn toggle_cell(&mut self, row: u32, col: u32) {
+        let idx = self.get_index(row, col);
+        log!("toggle: {} {}", row, col);
+        self.cells[idx].toggle();
+    }
+
     fn get_index(&self, row: u32, column: u32) -> usize {
         return (row * self.width + column) as usize;
     }
@@ -143,6 +149,15 @@ impl Universe {
         for (row, col) in cells.iter().cloned() {
             let idx = self.get_index(row, col);
             self.cells[idx] = Cell::Alive;
+        }
+    }
+}
+
+impl Cell {
+    fn toggle(&mut self) {
+        *self = match *self {
+            Cell::Dead => Cell::Alive,
+            Cell::Alive => Cell::Dead,
         }
     }
 }
