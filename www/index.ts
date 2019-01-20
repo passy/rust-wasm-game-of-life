@@ -30,7 +30,7 @@ const renderLoop = () => {
 const getIndex = (row: number, column: number) => row * width + column;
 
 const drawCells = (ctx: CanvasRenderingContext2D) => {
-    const cellsPtr = universe.cells();
+    const cellsPtr = universe.cells_ptr();
     const cells = new Uint8Array(memory.buffer, cellsPtr, width * height);
 
     ctx.beginPath();
